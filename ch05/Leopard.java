@@ -1,4 +1,4 @@
-public class Leopard extends Animal implements Predator {
+public class Leopard extends Predator {
     public String getFood() {
         return "orange";
     }
