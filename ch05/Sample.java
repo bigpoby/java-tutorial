@@ -13,5 +13,15 @@ public class Sample {
         // Tiger t1 = new Tiger();
         // Animal t2 = new Tiger();
         // Predator t3 = new Tiger();
+        // Barkable t4 = new Tiger();
+        // Lion t1 = new Lion();
+        // Animal t2 = new Lion();
+        // Predator t3 = new Lion();
+        // Barkable t4 = new Lion();
+
+
+        Bouncer bouncer = new Bouncer();
+        bouncer.barkAnimal(tiger);
+        bouncer.barkAnimal(lion);
     }
 }
