@@ -3,7 +3,7 @@ package ch07;
 import java.util.ArrayList;
 
 
-public class Sample extends Thread {
+public class Sample implements Runnable {
     int seq;
 
     public Sample(int seq) {
@@ -21,7 +21,7 @@ public class Sample extends Thread {
     public static void main(String[] args) {
         ArrayList<Thread> threads = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Thread t = new Sample(i);
+            Thread t = new Thread(new Sample(i));
             t.start();
             threads.add(t);
         }
