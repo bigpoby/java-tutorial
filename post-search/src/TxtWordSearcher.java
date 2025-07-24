@@ -9,9 +9,24 @@ import java.util.Scanner;
  */
 public class TxtWordSearcher {
     
+    /**
+     * 시스템 환경에 따른 적절한 문자 인코딩을 반환
+     * @return Windows: MS949, 기타: UTF-8
+     */
+    private static String getSystemEncoding() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("windows")) {
+            return "MS949";
+        } else {
+            return "UTF-8";
+        }
+    }
+    
     public static void main(String[] args) {
-        // Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        Scanner scanner = new Scanner(System.in, "MS949");
+        String encoding = getSystemEncoding();
+        Scanner scanner = new Scanner(System.in, encoding);
+        System.out.println("시스템 환경: " + System.getProperty("os.name"));
+        System.out.println("사용 인코딩: " + encoding);
         PerformanceMonitor.SearchStats stats;
         
         try {
@@ -113,10 +128,11 @@ public class TxtWordSearcher {
      * @return 총 라인 수
      */
     private static int calculateTotalLines(List<File> files) {
+        String encoding = getSystemEncoding();
         int totalLines = 0;
         for (File file : files) {
             try (java.io.BufferedReader reader = new java.io.BufferedReader(
-                    new java.io.FileReader(file, java.nio.charset.StandardCharsets.UTF_8))) {
+                    new java.io.FileReader(file, java.nio.charset.Charset.forName(encoding)))) {
                 while (reader.readLine() != null) {
                     totalLines++;
                 }
