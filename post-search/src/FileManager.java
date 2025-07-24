@@ -1,6 +1,7 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -69,13 +70,14 @@ public class FileManager {
         File[] files = directory.listFiles();
 
         if (files != null) {
-            for (File file : files) {
-                if (file.isFile() && isTxtFile(file)) {
-                    txtFiles.add(file);
-                } else if (file.isDirectory()) {
-                    findTxtFilesRecursiveHelper(file, txtFiles);
-                }
-            }
+            Arrays.stream(files)
+                    .filter(File::isFile)
+                    .filter(FileManager::isTxtFile)
+                    .forEach(txtFiles::add);
+
+            Arrays.stream(files)
+                    .filter(File::isDirectory)
+                    .forEach(subDir -> findTxtFilesRecursiveHelper(subDir, txtFiles));
         }
     }
 

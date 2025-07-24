@@ -80,20 +80,16 @@ public class SearchEngine {
      * @return 한글 포함 여부
      */
     private static boolean isKoreanText(String text) {
-        for (char c : text.toCharArray()) {
-            if ((c >= 0xAC00 && c <= 0xD7A3)
-                    || // 한글 완성형
-                    (c >= 0x1100 && c <= 0x11FF)
-                    || // 한글 자음
-                    (c >= 0x3130 && c <= 0x318F)
-                    || // 한글 호환 자모
-                    (c >= 0xA960 && c <= 0xA97F)
-                    || // 한글 확장-A
-                    (c >= 0xD7B0 && c <= 0xD7FF)) { // 한글 확장-B
-                return true;
-            }
-        }
-        return false;
+        return text.chars()
+                .anyMatch(c -> (c >= 0xAC00 && c <= 0xD7A3)
+                || // 한글 완성형
+                (c >= 0x1100 && c <= 0x11FF)
+                || // 한글 자음
+                (c >= 0x3130 && c <= 0x318F)
+                || // 한글 호환 자모
+                (c >= 0xA960 && c <= 0xA97F)
+                || // 한글 확장-A
+                (c >= 0xD7B0 && c <= 0xD7FF)); // 한글 확장-B
     }
 
     /**
