@@ -76,19 +76,36 @@ public class ResultDisplayer {
         if (results.isEmpty()) {
             System.out.println("검색 결과가 없습니다.");
         } else {
+            // 결과가 많을 경우 샘플링하여 출력 시간 단축
+            if (results.size() > 100) {
+                System.out.println("※ 결과가 많아 100개 중 1개씩 샘플링하여 표시합니다.");
+                System.out.println("※ 전체 결과는 저장된 파일에서 확인하세요.");
+                System.out.println();
+            }
+            
             String currentFileName = "";
-            for (int i = 0; i < results.size(); i++) {
+            int displayCount = 0;
+            int samplingRate = results.size() > 100 ? 100 : 1; // 100개 이상일 때만 샘플링
+            
+            for (int i = 0; i < results.size(); i += samplingRate) {
                 SearchEngine.SearchResult result = results.get(i);
                 
                 // 파일명이 바뀔 때마다 구분선 출력
                 if (!currentFileName.equals(result.getFileName())) {
-                    if (i > 0) System.out.println();
+                    if (displayCount > 0) System.out.println();
                     System.out.println("파일: " + result.getFileName());
                     System.out.println("----------------------------------------");
                     currentFileName = result.getFileName();
                 }
                 
                 System.out.printf("행 %d: %s%n", result.getLineNumber(), result.getLineContent());
+                displayCount++;
+                
+                // 너무 많은 출력을 방지하기 위한 추가 제한
+                if (displayCount >= 50) {
+                    System.out.println("\n... (더 많은 결과가 있습니다. 저장된 파일에서 전체 결과를 확인하세요)");
+                    break;
+                }
             }
         }
     }
