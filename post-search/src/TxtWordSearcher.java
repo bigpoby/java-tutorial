@@ -1,5 +1,4 @@
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,7 +10,8 @@ import java.util.Scanner;
 public class TxtWordSearcher {
     
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
+        // Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
+        Scanner scanner = new Scanner(System.in, "MS949");
         PerformanceMonitor.SearchStats stats;
         
         try {
