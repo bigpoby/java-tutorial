@@ -1,6 +1,7 @@
 import java.io.File;
 import java.util.Scanner;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 윈도우 디렉토리를 입력받아 txt 파일의 목록을 출력하는 프로그램 (리팩토링된 버전)
@@ -8,7 +9,7 @@ import java.util.List;
 public class TxtFileFinder {
     
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         
         try {
             ResultDisplayer.displayHeader("TXT 파일 검색 프로그램");

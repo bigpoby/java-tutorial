@@ -1,0 +1,6 @@
+e:\shin\java\post-search\test-files
+y
+테스트
+y
+korean_search_result
+n

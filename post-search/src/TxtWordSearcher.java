@@ -1,6 +1,7 @@
 import java.io.File;
 import java.util.List;
 import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
 
 /**
  * TXT 파일에서 특정 단어를 검색하고 결과를 저장하는 프로그램 (리팩토링된 버전)
@@ -8,7 +9,7 @@ import java.util.Scanner;
 public class TxtWordSearcher {
     
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         PerformanceMonitor.SearchStats stats = new PerformanceMonitor.SearchStats();
         
         try {

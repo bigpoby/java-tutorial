@@ -58,30 +58,64 @@ public class SearchEngine {
     }
     
     /**
-     * 문자열에 특정 단어가 포함되어 있는지 확인 (대소문자 구분 없음)
+     * 문자열에 특정 단어가 포함되어 있는지 확인 (대소문자 구분 없음, 한글 지원)
      * @param text 검색할 텍스트
      * @param searchWord 찾을 단어
      * @return 포함 여부
      */
     private static boolean containsWord(String text, String searchWord) {
-        return text.toLowerCase().contains(searchWord.toLowerCase());
+        // 한글의 경우 대소문자 변환이 의미가 없으므로, 
+        // 영문의 경우만 소문자로 변환하여 비교
+        if (isKoreanText(searchWord)) {
+            return text.contains(searchWord);
+        } else {
+            return text.toLowerCase().contains(searchWord.toLowerCase());
+        }
     }
     
     /**
-     * 텍스트에서 검색 단어의 위치를 찾는 메소드
+     * 텍스트가 한글을 포함하는지 확인하는 메소드
+     * @param text 확인할 텍스트
+     * @return 한글 포함 여부
+     */
+    private static boolean isKoreanText(String text) {
+        for (char c : text.toCharArray()) {
+            if ((c >= 0xAC00 && c <= 0xD7A3) || // 한글 완성형
+                (c >= 0x1100 && c <= 0x11FF) || // 한글 자음
+                (c >= 0x3130 && c <= 0x318F) || // 한글 호환 자모
+                (c >= 0xA960 && c <= 0xA97F) || // 한글 확장-A
+                (c >= 0xD7B0 && c <= 0xD7FF)) { // 한글 확장-B
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 텍스트에서 검색 단어의 위치를 찾는 메소드 (한글 지원)
      * @param text 검색할 텍스트
      * @param searchWord 찾을 단어
      * @return 단어 위치 목록
      */
     private static List<Integer> findWordPositions(String text, String searchWord) {
         List<Integer> positions = new ArrayList<>();
-        String lowerText = text.toLowerCase();
-        String lowerSearchWord = searchWord.toLowerCase();
         int index = 0;
         
-        while ((index = lowerText.indexOf(lowerSearchWord, index)) != -1) {
-            positions.add(index);
-            index += lowerSearchWord.length();
+        if (isKoreanText(searchWord)) {
+            // 한글의 경우 대소문자 변환 없이 직접 검색
+            while ((index = text.indexOf(searchWord, index)) != -1) {
+                positions.add(index);
+                index += searchWord.length();
+            }
+        } else {
+            // 영문의 경우 대소문자 구분 없이 검색
+            String lowerText = text.toLowerCase();
+            String lowerSearchWord = searchWord.toLowerCase();
+            
+            while ((index = lowerText.indexOf(lowerSearchWord, index)) != -1) {
+                positions.add(index);
+                index += lowerSearchWord.length();
+            }
         }
         
         return positions;
