@@ -34,8 +34,7 @@ public class TxtWordSearcher {
             String searchSubdirs = scanner.nextLine().toLowerCase();
             boolean recursive = searchSubdirs.equals("y") || searchSubdirs.equals("yes");
             
-
-            // 5. 검색할 단어 입력
+            // 3. 검색할 단어 입력
             System.out.print("\n검색할 단어를 입력하세요: ");
             String searchWord = scanner.nextLine().trim();
             
@@ -44,25 +43,20 @@ public class TxtWordSearcher {
                 return;
             }
 
-
-            // 성능 테스트 시작
+            // 4. 성능 측정 시작
             stats = new PerformanceMonitor.SearchStats();
 
-            // 3. 파일 검색
+            // 5. 파일 검색
             stats.startFileSearch();
             List<File> txtFiles = recursive ? 
                 FileManager.findTxtFilesRecursive(directory) : 
                 FileManager.findTxtFiles(directory);
             stats.endFileSearch(txtFiles.size());
             
-            // 4. 파일 목록 출력 - 성능 측정을 위해 불필요한 출력 제거
-            // ResultDisplayer.displayFileList(directoryPath, txtFiles, recursive);
-            
             if (txtFiles.isEmpty()) {
+                System.out.println("\n검색할 txt 파일이 없습니다.");
                 return;
             }
-            
-            
             
             // 6. 단어 검색 실행
             System.out.println("\n검색 중...");
@@ -77,14 +71,12 @@ public class TxtWordSearcher {
             // 7. 검색 결과 화면 출력
             ResultDisplayer.displaySearchResults(searchResults, searchWord, stats);
             
-            // 8. 검색 결과 자동 저장 (무조건 저장)
+            // 8. 검색 결과 자동 저장
             if (!searchResults.isEmpty()) {
-                // 현재 날짜시간으로 파일명 생성: 검색어_YYYYMMDD_HHmmss.txt
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
                 String timestamp = LocalDateTime.now().format(formatter);
                 String outputFileName = "output/" + searchWord + "_" + timestamp + ".txt";
                 
-                // 결과 저장
                 stats.endTotal();
                 boolean saveSuccess = ResultSaver.saveSearchResults(
                     searchResults, outputFileName, searchWord, stats);
@@ -98,17 +90,18 @@ public class TxtWordSearcher {
                 System.out.println("\n검색 결과가 없어 저장할 내용이 없습니다.");
             }
             
-            // 9. 성능 통계 출력 (옵션)
+            // 9. 성능 통계 출력 (선택사항)
             System.out.print("\n성능 통계를 표시하시겠습니까? (y/n): ");
             String showStats = scanner.nextLine().toLowerCase();
             if (showStats.equals("y") || showStats.equals("yes")) {
-                stats.endTotal();
+                if (!searchResults.isEmpty()) {
+                    stats.endTotal();
+                }
                 ResultDisplayer.displayPerformanceStats(stats);
             }
             
         } catch (Exception e) {
-            ResultDisplayer.displayError("예상치 못한 오류가 발생했습니다: " + e.getMessage());
-            e.printStackTrace();
+            ResultDisplayer.displayError("오류가 발생했습니다: " + e.getMessage());
         } finally {
             scanner.close();
         }

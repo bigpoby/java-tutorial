@@ -22,18 +22,17 @@
 - 전체 경로와 파일 정보 표시
 
 ### 3. TxtWordSearcher.java ⭐ 
-- **통합 버전**: txt 파일 검색 + 단어 검색 + 결과 저장 기능
-- 특정 단어가 포함된 행을 찾아 화면 출력 및 파일 저장
+- **통합 버전**: txt 파일 검색 + 단어 검색 + 자동 저장 기능
+- 특정 단어가 포함된 행을 찾아 화면 출력 및 자동 파일 저장
 - 검색 결과에 파일명, 행 번호, 행 내용 포함
+- 성능 모니터링 및 통계 제공
 
-### 4. WordSearcher.java
-- 단어 검색 로직을 담당하는 유틸리티 클래스
-- 파일 내용 읽기, 단어 검색, 결과 저장 기능 제공
-- SearchResult 내부 클래스로 검색 결과 구조화
-
-### 5. ResultDisplayer.java
-- 출력 로직을 담당하는 유틸리티 클래스
-- 파일 목록, 검색 결과, 저장 완료 메시지 등 다양한 출력 지원
+### 4. 핵심 유틸리티 클래스들
+- **FileManager.java**: 파일 시스템 작업 및 디렉토리 검증
+- **SearchEngine.java**: 텍스트 검색 엔진 (한글 지원)
+- **ResultDisplayer.java**: 결과 출력 및 UI 처리
+- **ResultSaver.java**: 검색 결과 파일 저장
+- **PerformanceMonitor.java**: 성능 측정 및 통계
 
 ## 빌드 및 실행 가이드
 
@@ -45,15 +44,9 @@
 javac -d . src/*.java
 ```
 
-#### 2. 개별 클래스 컴파일 (선택적)
+#### 1. 전체 프로젝트 컴파일
 ```powershell
-# 기본 파일 검색만 필요한 경우
-javac -d . src/FileManager.java src/ResultDisplayer.java src/TxtFileFinder.java
-
-# 재귀 검색이 필요한 경우
-javac -d . src/FileManager.java src/ResultDisplayer.java src/TxtFileFinderRecursive.java
-
-# 단어 검색 기능까지 필요한 경우 (전체 컴파일 권장)
+# 프로젝트 루트 디렉토리에서 실행
 javac -d . src/*.java
 ```
 
@@ -77,7 +70,8 @@ java TxtFileFinderRecursive
 ```powershell
 java TxtWordSearcher
 ```
-- 파일 검색 + 단어 검색 + 결과 저장 + 성능 측정
+- 파일 검색 + 단어 검색 + 자동 저장 + 성능 측정
+- 한글 검색 완벽 지원
 - 가장 완전한 기능 제공
 
 ### 📋 **단계별 사용법**

@@ -1,6 +1,0 @@
-e:\shin\java\post-search\test-files
-y
-프로그램
-y
-한글검색테스트
-n
