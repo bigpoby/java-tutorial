@@ -97,9 +97,11 @@ public class SearchEngine {
      * @param searchWord 찾을 단어
      * @return 단어 위치 목록
      */
-    private static List<Integer> findWordPositions(String text, String searchWord) {
+    private static List<Integer> findWordPositions(String text, String searchWord) throws UnsupportedEncodingException {
         List<Integer> positions = new ArrayList<>();
         int index = 0;
+
+        
         
         if (isKoreanText(searchWord)) {
             // 한글의 경우 대소문자 변환 없이 직접 검색
