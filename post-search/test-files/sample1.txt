@@ -1,2 +1,8 @@
 이것은 테스트용 텍스트 파일입니다.
 프로그램이 올바르게 동작하는지 확인하기 위한 샘플 파일입니다.
+자바 프로그래밍 언어를 사용하여 개발되었습니다.
+파일 검색 기능을 테스트하기 위한 내용입니다.
+단어 검색 테스트를 위해 다양한 키워드가 포함되어 있습니다.
+This is a test file for testing word search functionality.
+Java programming language is used for development.
+File search and word search features are being tested.

@@ -1,88 +1,45 @@
 import java.io.File;
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 윈도우 디렉토리를 입력받아 txt 파일의 목록을 출력하는 프로그램 (재귀 검색 버전)
+ * 윈도우 디렉토리를 입력받아 txt 파일의 목록을 출력하는 프로그램 (재귀 검색 버전, 리팩토링됨)
  */
 public class TxtFileFinderRecursive {
     
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         
-        ResultDisplayer.displayHeader("TXT 파일 재귀 검색 프로그램");
-        System.out.print("검색할 디렉토리 경로를 입력하세요: ");
-        String directoryPath = scanner.nextLine();
-        
-        System.out.print("하위 디렉토리까지 검색하시겠습니까? (y/n): ");
-        String searchSubdirs = scanner.nextLine().toLowerCase();
-        boolean recursive = searchSubdirs.equals("y") || searchSubdirs.equals("yes");
-        
-        // 입력받은 경로로 File 객체 생성
-        File directory = new File(directoryPath);
-        
-        // 디렉토리 유효성 검사
-        if (!directory.exists()) {
-            ResultDisplayer.displayError("지정된 경로가 존재하지 않습니다.");
-            scanner.close();
-            return;
-        }
-        
-        if (!directory.isDirectory()) {
-            ResultDisplayer.displayError("지정된 경로가 디렉토리가 아닙니다.");
-            scanner.close();
-            return;
-        }
-        
-        // txt 파일 목록 검색
-        List<File> txtFiles = new ArrayList<>();
-        if (recursive) {
-            findTxtFilesRecursive(directory, txtFiles);
-        } else {
-            findTxtFiles(directory, txtFiles);
-        }
-        
-        // 결과 출력
-        ResultDisplayer.displayRecursiveResults(directoryPath, txtFiles, recursive);
-        
-        scanner.close();
-    }
-    
-    /**
-     * 지정된 디렉토리에서 txt 파일들을 찾는 메소드 (현재 디렉토리만)
-     * @param directory 검색할 디렉토리
-     * @param txtFiles txt 파일을 저장할 리스트
-     */
-    private static void findTxtFiles(File directory, List<File> txtFiles) {
-        File[] files = directory.listFiles();
-        
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile() && file.getName().toLowerCase().endsWith(".txt")) {
-                    txtFiles.add(file);
-                }
+        try {
+            ResultDisplayer.displayHeader("TXT 파일 재귀 검색 프로그램");
+            System.out.print("검색할 디렉토리 경로를 입력하세요: ");
+            String directoryPath = scanner.nextLine();
+            
+            System.out.print("하위 디렉토리까지 검색하시겠습니까? (y/n): ");
+            String searchSubdirs = scanner.nextLine().toLowerCase();
+            boolean recursive = searchSubdirs.equals("y") || searchSubdirs.equals("yes");
+            
+            // 디렉토리 검증
+            File directory;
+            try {
+                directory = FileManager.validateDirectory(directoryPath);
+            } catch (IllegalArgumentException e) {
+                ResultDisplayer.displayError(e.getMessage());
+                return;
             }
-        }
-    }
-    
-    /**
-     * 지정된 디렉토리에서 txt 파일들을 재귀적으로 찾는 메소드
-     * @param directory 검색할 디렉토리
-     * @param txtFiles txt 파일을 저장할 리스트
-     */
-    private static void findTxtFilesRecursive(File directory, List<File> txtFiles) {
-        File[] files = directory.listFiles();
-        
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile() && file.getName().toLowerCase().endsWith(".txt")) {
-                    txtFiles.add(file);
-                } else if (file.isDirectory()) {
-                    // 하위 디렉토리를 재귀적으로 검색
-                    findTxtFilesRecursive(file, txtFiles);
-                }
-            }
+            
+            // txt 파일 목록 검색
+            List<File> txtFiles = recursive ? 
+                FileManager.findTxtFilesRecursive(directory) : 
+                FileManager.findTxtFiles(directory);
+            
+            // 결과 출력
+            ResultDisplayer.displayFileList(directoryPath, txtFiles, recursive);
+            
+        } catch (Exception e) {
+            ResultDisplayer.displayError("예상치 못한 오류가 발생했습니다: " + e.getMessage());
+        } finally {
+            scanner.close();
         }
     }
 }
