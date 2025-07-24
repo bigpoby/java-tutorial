@@ -132,17 +132,17 @@ public class TxtWordSearcher {
      */
     private static int calculateTotalLines(List<File> files) {
         String encoding = getSystemEncoding();
-        int totalLines = 0;
-        for (File file : files) {
-            try (java.io.BufferedReader reader = new java.io.BufferedReader(
-                    new java.io.FileReader(file, java.nio.charset.Charset.forName(encoding)))) {
-                while (reader.readLine() != null) {
-                    totalLines++;
-                }
-            } catch (java.io.IOException e) {
-                // 라인 수 계산 실패 시 무시
-            }
-        }
-        return totalLines;
+
+        return files.stream()
+                .mapToInt(file -> {
+                    try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                            new java.io.FileReader(file, java.nio.charset.Charset.forName(encoding)))) {
+                        return (int) reader.lines().count();
+                    } catch (java.io.IOException e) {
+                        // 라인 수 계산 실패 시 0 반환
+                        return 0;
+                    }
+                })
+                .sum();
     }
 }
