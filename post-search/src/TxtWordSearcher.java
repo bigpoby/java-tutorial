@@ -1,7 +1,9 @@
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
-import java.nio.charset.StandardCharsets;
 
 /**
  * TXT 파일에서 특정 단어를 검색하고 결과를 저장하는 프로그램 (리팩토링된 버전)
@@ -10,7 +12,7 @@ public class TxtWordSearcher {
     
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        PerformanceMonitor.SearchStats stats = new PerformanceMonitor.SearchStats();
+        PerformanceMonitor.SearchStats stats;
         
         try {
             ResultDisplayer.displayHeader("TXT 파일 단어 검색 프로그램 v2.0");
@@ -32,20 +34,7 @@ public class TxtWordSearcher {
             String searchSubdirs = scanner.nextLine().toLowerCase();
             boolean recursive = searchSubdirs.equals("y") || searchSubdirs.equals("yes");
             
-            // 3. 파일 검색
-            stats.startFileSearch();
-            List<File> txtFiles = recursive ? 
-                FileManager.findTxtFilesRecursive(directory) : 
-                FileManager.findTxtFiles(directory);
-            stats.endFileSearch(txtFiles.size());
-            
-            // 4. 파일 목록 출력
-            ResultDisplayer.displayFileList(directoryPath, txtFiles, recursive);
-            
-            if (txtFiles.isEmpty()) {
-                return;
-            }
-            
+
             // 5. 검색할 단어 입력
             System.out.print("\n검색할 단어를 입력하세요: ");
             String searchWord = scanner.nextLine().trim();
@@ -54,6 +43,26 @@ public class TxtWordSearcher {
                 ResultDisplayer.displayError("검색어를 입력해주세요.");
                 return;
             }
+
+
+            // 성능 테스트 시작
+            stats = new PerformanceMonitor.SearchStats();
+
+            // 3. 파일 검색
+            stats.startFileSearch();
+            List<File> txtFiles = recursive ? 
+                FileManager.findTxtFilesRecursive(directory) : 
+                FileManager.findTxtFiles(directory);
+            stats.endFileSearch(txtFiles.size());
+            
+            // 4. 파일 목록 출력 - 성능 측정을 위해 불필요한 출력 제거
+            // ResultDisplayer.displayFileList(directoryPath, txtFiles, recursive);
+            
+            if (txtFiles.isEmpty()) {
+                return;
+            }
+            
+            
             
             // 6. 단어 검색 실행
             System.out.println("\n검색 중...");
@@ -68,32 +77,25 @@ public class TxtWordSearcher {
             // 7. 검색 결과 화면 출력
             ResultDisplayer.displaySearchResults(searchResults, searchWord, stats);
             
-            // 8. 결과 저장 여부 확인
+            // 8. 검색 결과 자동 저장 (무조건 저장)
             if (!searchResults.isEmpty()) {
-                System.out.print("\n검색 결과를 파일로 저장하시겠습니까? (y/n): ");
-                String saveChoice = scanner.nextLine().toLowerCase();
+                // 현재 날짜시간으로 파일명 생성: 검색어_YYYYMMDD_HHmmss.txt
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+                String timestamp = LocalDateTime.now().format(formatter);
+                String outputFileName = "output/" + searchWord + "_" + timestamp + ".txt";
                 
-                if (saveChoice.equals("y") || saveChoice.equals("yes")) {
-                    System.out.print("저장할 파일명을 입력하세요 (확장자 제외): ");
-                    String outputFileName = scanner.nextLine().trim();
-                    
-                    if (outputFileName.isEmpty()) {
-                        outputFileName = "search_result_" + searchWord + "_" + System.currentTimeMillis();
-                    }
-                    
-                    outputFileName += ".txt";
-                    
-                    // 결과 저장
-                    stats.endTotal();
-                    boolean saveSuccess = ResultSaver.saveSearchResults(
-                        searchResults, outputFileName, searchWord, stats);
-                    
-                    if (saveSuccess) {
-                        ResultDisplayer.displaySaveSuccess(outputFileName, searchResults.size());
-                    } else {
-                        ResultDisplayer.displayError("파일 저장에 실패했습니다.");
-                    }
+                // 결과 저장
+                stats.endTotal();
+                boolean saveSuccess = ResultSaver.saveSearchResults(
+                    searchResults, outputFileName, searchWord, stats);
+                
+                if (saveSuccess) {
+                    ResultDisplayer.displaySaveSuccess(outputFileName, searchResults.size());
+                } else {
+                    ResultDisplayer.displayError("파일 저장에 실패했습니다.");
                 }
+            } else {
+                System.out.println("\n검색 결과가 없어 저장할 내용이 없습니다.");
             }
             
             // 9. 성능 통계 출력 (옵션)

@@ -130,11 +130,16 @@ java TxtWordSearcher
 행 3: 검색 기능이 한글을 제대로 처리하는지 확인합니다.
 ```
 
-#### **7단계: 결과 저장 (선택)**
+#### **7단계: 결과 자동 저장**
 ```
-검색 결과를 파일로 저장하시겠습니까? (y/n): y
-저장할 파일명을 입력하세요 (확장자 제외): 한글검색결과
+=== 저장 완료 ===
+저장된 파일: output/한글검색_20250724_141907.txt
+저장된 항목 수: 6
 ```
+**자동 저장 규칙:**
+- 파일명 형식: `검색어_YYYYMMDD_HHmmss.txt`
+- 저장 위치: `output/` 폴더
+- 검색 결과가 있을 때만 저장
 
 #### **8단계: 성능 통계 확인 (선택)**
 ```
@@ -163,8 +168,9 @@ java TxtWordSearcher
    - **한영 혼용 검색어** 지원
 
 3. **결과 파일**:
-   - 자동으로 `.txt` 확장자 추가
-   - 파일명이 비어있으면 자동 생성
+   - **자동 저장**: 검색 결과가 있으면 무조건 저장
+   - **파일명 형식**: `검색어_YYYYMMDD_HHmmss.txt`
+   - **저장 위치**: `output/` 폴더
    - UTF-8 인코딩으로 저장
 
 #### **성능 최적화**:
@@ -180,7 +186,7 @@ java TxtWordSearcher
 # 입력: C:\Documents\Korean
 # 재귀: y
 # 검색어: 한글검색
-# 저장: y, 파일명: 한글검색결과
+# 자동 저장됨: output/한글검색_20250724_141500.txt
 ```
 
 #### **예시 2: 프로젝트 문서에서 TODO 찾기**
@@ -189,7 +195,7 @@ java TxtWordSearcher
 # 입력: C:\MyProject\docs
 # 재귀: y
 # 검색어: TODO
-# 저장: y, 파일명: project_todos
+# 자동 저장됨: output/TODO_20250724_141600.txt
 ```
 
 #### **예시 3: 로그 파일에서 ERROR 찾기**
@@ -198,7 +204,7 @@ java TxtWordSearcher
 # 입력: C:\logs
 # 재귀: n
 # 검색어: ERROR
-# 저장: y, 파일명: error_log_analysis
+# 자동 저장됨: output/ERROR_20250724_141700.txt
 ```
 
 #### **예시 4: 코드에서 특정 함수명 찾기**
@@ -207,7 +213,7 @@ java TxtWordSearcher
 # 입력: C:\MyProject\src
 # 재귀: y  
 # 검색어: calculateTotal
-# 저장: y, 파일명: function_usage
+# 자동 저장됨: output/calculateTotal_20250724_141800.txt
 ```
 
 ### ⚠️ **주의사항**
